@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect, Connect } from "react-redux";
 import PropTypes from "prop-types";
 import { addLead } from "../../redux/slices/leads";
-
+import { createMessage } from "../../redux/slices/messages";
 class Form extends Component {
   state = {
     name: "",
@@ -24,6 +24,7 @@ class Form extends Component {
       email,
       message,
     };
+    this.props.createMessage({ message: "Lead Created Succesfully" });
     this.props.addLead(lead);
   };
 
@@ -75,4 +76,4 @@ class Form extends Component {
   }
 }
 
-export default connect(null, { addLead })(Form);
+export default connect(null, { addLead, createMessage })(Form);

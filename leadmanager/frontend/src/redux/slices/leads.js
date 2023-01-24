@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+import { getErrors } from "./errors";
+
 const parseCookie = (str) =>
   str
     .split(";")
@@ -41,15 +43,23 @@ export const deleteLead = createAsyncThunk(
   }
 );
 
-export const addLead = createAsyncThunk("leads/addLead", async (lead) => {
-  try {
-    const res = await axios.post("api/leads/", lead);
-    // console.log("Get leads res: ", res);
-    return res.data;
-  } catch (error) {
-    console.log(error);
+export const addLead = createAsyncThunk(
+  "leads/addLead",
+  async (lead, thunkAPI) => {
+    try {
+      const res = await axios.post("api/leads/", lead);
+      // console.log("Get leads res: ", res);
+      return res.data;
+    } catch (error) {
+      const errors = {
+        msg: error.response.data,
+        status: error.response.status,
+      };
+      thunkAPI.dispatch(getErrors(errors));
+      throw new Error(error);
+    }
   }
-});
+);
 
 const leadsSlice = createSlice({
   name: "leads",

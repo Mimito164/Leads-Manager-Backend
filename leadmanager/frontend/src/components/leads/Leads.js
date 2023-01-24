@@ -1,6 +1,7 @@
 import React, { Component, Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteLead, getLeads } from "../../redux/slices/leads";
+import { createMessage } from "../../redux/slices/messages";
 // import PropTypes from "prop-types";
 // import { getLeads } from "../../actions/leads";
 
@@ -13,6 +14,7 @@ export default function Leads() {
   }, []);
 
   function handleDeleteLead(id) {
+    dispatch(createMessage({ message: "Lead has been deleted" }));
     dispatch(deleteLead(id));
   }
 
