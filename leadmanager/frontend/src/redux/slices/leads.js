@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 import { getErrors } from "./errors";
+import { createMessage } from "./messages";
 
 const parseCookie = (str) =>
   str
@@ -35,6 +36,9 @@ export const deleteLead = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       await axios.delete(`api/leads/${id}/`);
+      thunkAPI.dispatch(
+        createMessage({ leadDeleted: "Lead deleted Succesfully" })
+      );
       // console.log("delete leds res: ", res);
       return id;
     } catch (error) {
@@ -49,6 +53,7 @@ export const addLead = createAsyncThunk(
     try {
       const res = await axios.post("api/leads/", lead);
       // console.log("Get leads res: ", res);
+      thunkAPI.dispatch(createMessage({ leadAdded: "Lead added Succesfully" }));
       return res.data;
     } catch (error) {
       const errors = {

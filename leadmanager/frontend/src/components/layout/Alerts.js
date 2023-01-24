@@ -11,7 +11,8 @@ export default function Alerts() {
   }, [stateErrors]);
 
   useEffect(() => {
-    if (stateMessages.message) toast(`${stateMessages.message}`);
+    if (stateMessages.leadAdded) toast(`${stateMessages.leadAdded}`);
+    if (stateMessages.leadDeleted) toast(`${stateMessages.leadDeleted}`);
   }, [stateMessages]);
 
   return <Toaster />;
