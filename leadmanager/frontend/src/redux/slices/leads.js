@@ -1,27 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { getCookies } from "../../helpers/cookies";
 import { returnErrors } from "./errors";
 import { createMessage } from "./messages";
 
-const parseCookie = (str) =>
-  str
-    .split(";")
-    .map((v) => v.split("="))
-    .reduce((acc, v) => {
-      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-      return acc;
-    }, {});
-
-const allCookies = document.cookie;
-const parsedCookies = allCookies && parseCookie(allCookies);
-
-if (parsedCookies) {
-  axios.defaults.headers.common = {
-    csrftoken: parsedCookies.csrftoken,
-    "X-CSRFToken": parsedCookies.csrftoken,
-  };
-}
+axios.defaults.headers.common = getCookies();
 
 export const getLeads = createAsyncThunk(
   "leads/getLeads",
@@ -79,7 +62,7 @@ export const addLead = createAsyncThunk(
 const leadsSlice = createSlice({
   name: "leads",
   initialState: [],
-  reducers: {}, // el reducer ta vacio
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(getLeads.fulfilled, (state, action) => {
