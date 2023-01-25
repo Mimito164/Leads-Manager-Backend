@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-import { getErrors } from "./errors";
+import { returnErrors } from "./errors";
 import { createMessage } from "./messages";
 
 const parseCookie = (str) =>
@@ -14,22 +14,32 @@ const parseCookie = (str) =>
     }, {});
 
 const allCookies = document.cookie;
-const parsedCookies = parseCookie(allCookies);
+const parsedCookies = allCookies && parseCookie(allCookies);
 
-axios.defaults.headers.common = {
-  csrftoken: parsedCookies.csrftoken,
-  "X-CSRFToken": parsedCookies.csrftoken,
-};
+if (parsedCookies) {
+  axios.defaults.headers.common = {
+    csrftoken: parsedCookies.csrftoken,
+    "X-CSRFToken": parsedCookies.csrftoken,
+  };
+}
 
-export const getLeads = createAsyncThunk("leads/getLeads", async () => {
-  try {
-    const res = await axios.get("api/leads/");
-    // console.log("Get leads res: ", res);
-    return res.data;
-  } catch (error) {
-    console.log(error);
+export const getLeads = createAsyncThunk(
+  "leads/getLeads",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axios.get("api/leads/");
+      // console.log("Get leads res: ", res);
+      return res.data;
+    } catch (error) {
+      const errors = {
+        msg: error.response.data,
+        status: error.response.status,
+      };
+      thunkAPI.dispatch(returnErrors(errors));
+      throw new Error(error);
+    }
   }
-});
+);
 
 export const deleteLead = createAsyncThunk(
   "leads/deleteLead",
@@ -42,7 +52,7 @@ export const deleteLead = createAsyncThunk(
       // console.log("delete leds res: ", res);
       return id;
     } catch (error) {
-      console.log(error);
+      console.log("deleteLead", error);
     }
   }
 );
@@ -60,7 +70,7 @@ export const addLead = createAsyncThunk(
         msg: error.response.data,
         status: error.response.status,
       };
-      thunkAPI.dispatch(getErrors(errors));
+      thunkAPI.dispatch(returnErrors(errors));
       throw new Error(error);
     }
   }

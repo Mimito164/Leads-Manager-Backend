@@ -11,10 +11,13 @@ const errorsSlice = createSlice({
       state.msg = action.payload.msg;
       state.status = action.payload.status;
     },
+    returnErrors: (state, action) => {
+      return action.payload;
+    },
   }, // el reducer ta vacio
   extraReducers(builder) {},
 });
 
-export const { getErrors } = errorsSlice.actions;
+export const { getErrors, returnErrors } = errorsSlice.actions;
 
 export default errorsSlice.reducer;
