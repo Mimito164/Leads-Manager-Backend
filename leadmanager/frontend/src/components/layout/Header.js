@@ -2,19 +2,29 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { logout } from "../../redux/slices/auth";
 
 class Header extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
+    logout: PropTypes.func.isRequired,
   };
 
   render() {
     const { isAuthenticated, user } = this.props.auth;
-
+    // console.log("conchesumadre", user);
     const aurthLinks = (
       <ul className='navbar-nav ml-auto mt-2 mt-lg-0'>
+        <span className='navbar-text me-sm-3'>
+          <strong>{user ? `Welcome ${user}` : ""}</strong>
+        </span>
         <li className='nav-item'>
-          <button className='nav-link btn btn-info text-light'>Logout</button>
+          <button
+            onClick={this.props.logout}
+            className='nav-link btn btn-info text-light'
+          >
+            Logout
+          </button>
         </li>
       </ul>
     );
@@ -64,4 +74,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, { logout })(Header);

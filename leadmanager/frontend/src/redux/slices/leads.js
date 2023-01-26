@@ -3,14 +3,17 @@ import axios from "axios";
 import { getCookies } from "../../helpers/cookies";
 import { returnErrors } from "./errors";
 import { createMessage } from "./messages";
+import { tokenConfig } from "./helpers";
 
 axios.defaults.headers.common = getCookies();
 
 export const getLeads = createAsyncThunk(
   "leads/getLeads",
   async (_, thunkAPI) => {
+    const config = tokenConfig(thunkAPI);
+    console.log("la config getleads", config);
     try {
-      const res = await axios.get("api/leads/");
+      const res = await axios.get("api/leads/", config);
       // console.log("Get leads res: ", res);
       return res.data;
     } catch (error) {
@@ -27,8 +30,9 @@ export const getLeads = createAsyncThunk(
 export const deleteLead = createAsyncThunk(
   "leads/deleteLead",
   async (id, thunkAPI) => {
+    const config = tokenConfig(thunkAPI);
     try {
-      await axios.delete(`api/leads/${id}/`);
+      await axios.delete(`api/leads/${id}/`, config);
       thunkAPI.dispatch(
         createMessage({ leadDeleted: "Lead deleted Succesfully" })
       );
@@ -43,8 +47,9 @@ export const deleteLead = createAsyncThunk(
 export const addLead = createAsyncThunk(
   "leads/addLead",
   async (lead, thunkAPI) => {
+    const config = tokenConfig(thunkAPI);
     try {
-      const res = await axios.post("api/leads/", lead);
+      const res = await axios.post("api/leads/", lead, config);
       // console.log("Get leads res: ", res);
       thunkAPI.dispatch(createMessage({ leadAdded: "Lead added Succesfully" }));
       return res.data;

@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { registerUser } from "../../redux/slices/auth";
+import { createMessage } from "../../redux/slices/messages";
 
-export default class Register extends Component {
+class Register extends Component {
   state = {
     username: "",
     email: "",
@@ -9,15 +14,31 @@ export default class Register extends Component {
     password2: "",
   };
 
+  static propTypes = {
+    registerUser: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
 
-    console.log("submit");
+    const { password, password2, username, email } = this.state;
+    if (password !== password2)
+      this.props.createMessage({ passwordNotMach: "Password didn't match" });
+    else {
+      const newUser = {
+        username,
+        email,
+        password,
+      };
+      this.props.registerUser(newUser);
+    }
   };
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
   render() {
+    if (this.props.isAuthenticated) return <Navigate to='/' />;
     const { username, email, password, password2 } = this.state;
 
     return (
@@ -79,3 +100,11 @@ export default class Register extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { registerUser, createMessage })(
+  Register
+);
