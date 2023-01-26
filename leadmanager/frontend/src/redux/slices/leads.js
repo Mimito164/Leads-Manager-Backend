@@ -48,6 +48,7 @@ export const addLead = createAsyncThunk(
   "leads/addLead",
   async (lead, thunkAPI) => {
     const config = tokenConfig(thunkAPI);
+    console.log(config);
     try {
       const res = await axios.post("api/leads/", lead, config);
       // console.log("Get leads res: ", res);

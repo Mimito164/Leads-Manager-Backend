@@ -8,13 +8,9 @@ export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, thunkAPI) => {
     thunkAPI.dispatch(userLoading());
-
     const config = tokenConfig(thunkAPI); // has the header and token
-
     try {
       const res = await axios.get("/api/auth/user", config);
-      console.log(res.data);
-
       thunkAPI.dispatch(userLoaded(res.data.username));
     } catch (error) {
       thunkAPI.dispatch(
@@ -33,7 +29,6 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   const config = tokenConfig(thunkAPI);
   try {
     await axios.post("/api/auth/logout", null, config);
-
     thunkAPI.dispatch(logoutSucces());
   } catch (error) {
     thunkAPI.dispatch(
@@ -42,7 +37,6 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
         status: error.response.status,
       })
     );
-
     console.error(error);
   }
 });

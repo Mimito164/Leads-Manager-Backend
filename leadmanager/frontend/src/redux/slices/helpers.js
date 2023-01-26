@@ -1,6 +1,10 @@
+import { getCookies } from "../../helpers/cookies";
+
 export const tokenConfig = (thunkAPI) => {
+  const cookies = getCookies();
   const config = {
     headers: {
+      ...cookies,
       "Content-Type": "application/json",
     },
   };
