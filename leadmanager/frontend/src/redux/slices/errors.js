@@ -12,9 +12,10 @@ const errorsSlice = createSlice({
       state.status = action.payload.status;
     },
     returnErrors: (state, action) => {
-      return action.payload;
+      state.msg = action.payload.msg;
+      state.status = action.payload.status;
     },
-  }, // el reducer ta vacio
+  },
   extraReducers(builder) {},
 });
 

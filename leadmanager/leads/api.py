@@ -13,7 +13,10 @@ class LeadVieset(viewsets.ModelViewSet):
     serializer_class = LeadSerializer
     
     def get_queryset(self):
-        return self.user.leads.all()
+        # return Lead.objects.filter(owner = self.user)
+        return self.request.user.leads.all()
+        # return self.user.leads.all()
+
     
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
